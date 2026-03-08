@@ -81,13 +81,15 @@ export default function Workflow() {
                         <div key={step.title} className="relative flex flex-col items-center">
                             {/* Connector line (not on last) */}
                             {i < steps.length - 1 && (
-                                <div className="workflow-line hidden md:block absolute top-9 left-1/2 w-full h-px bg-white/10 origin-left z-0" />
+                                <div className="workflow-line hidden md:block absolute top-12 left-1/2 w-full h-px bg-white/10 origin-left z-0" />
                             )}
 
                             <div className="workflow-step relative z-10 flex flex-col items-center text-center rounded-xl px-2.5 py-4 transition-all duration-300 border border-transparent hover:border-primary/35 hover:bg-white/[0.04]">
-                                {/* Step number ring */}
-                                <div className="w-14 h-14 rounded-full bg-primary/10 border-2 border-primary flex items-center justify-center mb-4">
-                                    <step.icon size={22} className="text-primary" />
+                                {/* Step number ring — outer shell masks connector line */}
+                                <div className="w-16 h-16 rounded-full bg-bg-dark flex items-center justify-center mb-4">
+                                    <div className="w-14 h-14 rounded-full bg-primary/10 border-2 border-primary flex items-center justify-center">
+                                        <step.icon size={22} className="text-primary" />
+                                    </div>
                                 </div>
 
                                 <span className="text-xs font-bold text-primary mb-1.5">
