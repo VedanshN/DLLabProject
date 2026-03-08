@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { TrendingDown, Eye, BarChart3 } from 'lucide-react';
 import gsap from 'gsap';
 import { prefersReducedMotion, registerMotionPlugins, revealSectionItems } from '../lib/motion';
@@ -35,6 +35,7 @@ const results = [
 
 export default function Results() {
     const sectionRef = useRef<HTMLElement>(null);
+    const [hoveredLossIndex, setHoveredLossIndex] = useState<number | null>(null);
 
     useEffect(() => {
         registerMotionPlugins();
@@ -50,6 +51,17 @@ export default function Results() {
                 transformOrigin: 'bottom',
                 duration: 0.45,
                 stagger: 0.02,
+                ease: 'power2.out',
+                scrollTrigger: {
+                    trigger: sectionRef.current,
+                    start: 'top 78%',
+                    once: true,
+                },
+            });
+            gsap.from('.result-line', {
+                scaleY: 0,
+                transformOrigin: 'bottom',
+                duration: 0.6,
                 ease: 'power2.out',
                 scrollTrigger: {
                     trigger: sectionRef.current,
@@ -89,16 +101,78 @@ export default function Results() {
                                 </div>
                             </div>
 
-                            {/* Mini bar chart */}
-                            <div className="flex items-end gap-1 h-20 mb-4">
-                                {r.chartBars.map((h, i) => (
-                                    <div
-                                        key={i}
-                                        className="result-bar flex-1 rounded-t bg-primary/20 hover:bg-primary/40 transition-colors"
-                                        style={{ height: `${h}%` }}
-                                    />
-                                ))}
-                            </div>
+                            {/* Mini chart */}
+                            {r.title === 'Training Loss Curve' ? (
+                                <div 
+                                    className="relative flex items-end h-20 mb-4 w-full"
+                                    onMouseLeave={() => setHoveredLossIndex(null)}
+                                >
+                                    <svg
+                                        className="w-full h-full overflow-visible result-line"
+                                        viewBox="0 0 100 100"
+                                        preserveAspectRatio="none"
+                                    >
+                                        <polyline
+                                            points={r.chartBars.map((val, i) => `${(i / (r.chartBars.length - 1)) * 100},${100 - val}`).join(' ')}
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="3"
+                                            className="text-primary"
+                                            vectorEffect="non-scaling-stroke"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                        />
+                                        {r.chartBars.map((val, i) => {
+                                            const x = (i / (r.chartBars.length - 1)) * 100;
+                                            const y = 100 - val;
+                                            return (
+                                                <circle
+                                                    key={i}
+                                                    cx={x}
+                                                    cy={y}
+                                                    r="4.5"
+                                                    vectorEffect="non-scaling-stroke"
+                                                    className={`transition-all duration-200 ${hoveredLossIndex === i ? 'fill-primary stroke-white opacity-100' : 'opacity-0'}`}
+                                                    style={{ strokeWidth: 3 }}
+                                                />
+                                            );
+                                        })}
+                                    </svg>
+                                    
+                                    {/* Hover Areas */}
+                                    <div className="absolute inset-0 flex z-10">
+                                        {r.chartBars.map((_, i) => (
+                                            <div
+                                                key={i}
+                                                className="h-full flex-1 cursor-crosshair"
+                                                onMouseEnter={() => setHoveredLossIndex(i)}
+                                            />
+                                        ))}
+                                    </div>
+
+                                    {/* Tooltip */}
+                                    <div 
+                                        className={`absolute -top-8 bg-gray-900 border text-xs px-2.5 py-1 rounded-md shadow-lg whitespace-nowrap transition-all duration-200 pointer-events-none z-20 text-white font-medium ${hoveredLossIndex !== null ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-1'}`}
+                                        style={{ 
+                                            left: hoveredLossIndex !== null ? `calc(${(hoveredLossIndex / (r.chartBars.length - 1)) * 100}%)` : '50%',
+                                            transform: 'translateX(-50%)',
+                                            willChange: 'transform, opacity, left'
+                                        }}
+                                    >
+                                        {hoveredLossIndex !== null && `Loss: ${(r.chartBars[hoveredLossIndex] * (0.0043 / 12)).toFixed(4)}`}
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="flex items-end gap-1 h-20 mb-4">
+                                    {r.chartBars.map((h, i) => (
+                                        <div
+                                            key={i}
+                                            className="result-bar flex-1 rounded-t bg-primary/20 hover:bg-primary/40 transition-colors"
+                                            style={{ height: `${h}%` }}
+                                        />
+                                    ))}
+                                </div>
+                            )}
 
                             {/* Metric */}
                             <div className="flex items-baseline gap-2 mb-3">

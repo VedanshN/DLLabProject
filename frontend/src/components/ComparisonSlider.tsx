@@ -152,26 +152,23 @@ export default function ComparisonSlider({ liveGrayscaleUrl, liveColorizedUrl }:
                         )}
 
                         {/* Grayscale (clipped) */}
-                        <div
-                            className="absolute inset-0 overflow-hidden"
-                            style={{ width: 'var(--slider-pos)' }}
-                        >
-                            {isLive ? (
-                                <img
-                                    src={grayscaleSrc}
-                                    alt="Grayscale"
-                                    className="absolute inset-0 w-full h-full object-cover"
-                                    draggable={false}
-                                />
-                            ) : (
-                                <FadeImage
-                                    src={grayscaleSrc}
-                                    alt="Grayscale"
-                                    className="absolute inset-0 w-full h-full object-cover"
-                                    draggable={false}
-                                />
-                            )}
-                        </div>
+                        {isLive ? (
+                            <img
+                                src={grayscaleSrc}
+                                alt="Grayscale"
+                                className="absolute inset-0 w-full h-full object-cover"
+                                draggable={false}
+                                style={{ clipPath: 'inset(0 calc(100% - var(--slider-pos)) 0 0)' }}
+                            />
+                        ) : (
+                            <FadeImage
+                                src={grayscaleSrc}
+                                alt="Grayscale"
+                                className="absolute inset-0 w-full h-full object-cover"
+                                draggable={false}
+                                style={{ clipPath: 'inset(0 calc(100% - var(--slider-pos)) 0 0)' }}
+                            />
+                        )}
 
                         {/* Divider line + handle */}
                         <div
