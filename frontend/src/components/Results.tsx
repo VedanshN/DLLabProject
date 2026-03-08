@@ -155,11 +155,12 @@ export default function Results() {
 
                                     {/* Tooltip */}
                                     <div 
-                                        className={`absolute flex items-center gap-1 bg-[#131b2c] border border-white/10 text-xs px-2.5 py-1.5 rounded-md shadow-xl whitespace-nowrap pointer-events-none z-20 font-medium -translate-x-1/2 -translate-y-[calc(100%+12px)] transition-all duration-200 ${hoveredLossIndex !== null ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
+                                        className={`absolute flex items-center justify-center gap-1 bg-[#131b2c] border border-white/10 text-xs px-2.5 py-1.5 rounded-md shadow-xl whitespace-nowrap pointer-events-none z-20 font-medium -translate-x-1/2 -translate-y-[calc(100%+12px)] transition-all duration-200 ${hoveredLossIndex !== null ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
                                         style={{ 
                                             left: hoveredLossIndex !== null ? `${(hoveredLossIndex / (r.chartBars.length - 1)) * 100}%` : '50%',
                                             top: hoveredLossIndex !== null ? `${100 - r.chartBars[hoveredLossIndex]}%` : '50%',
-                                            willChange: 'left, top, opacity, transform'
+                                            willChange: 'left, top, opacity, transform',
+                                            transformOrigin: 'bottom center'
                                         }}
                                     >
                                         <span className="text-slate-400 font-normal">Loss:</span>
