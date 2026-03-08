@@ -122,22 +122,25 @@ export default function Results() {
                                             strokeLinecap="round"
                                             strokeLinejoin="round"
                                         />
+                                    </svg>
+                                    
+                                    {/* Data Points Overlay */}
+                                    <div className="absolute inset-0 pointer-events-none z-10">
                                         {r.chartBars.map((val, i) => {
                                             const x = (i / (r.chartBars.length - 1)) * 100;
                                             const y = 100 - val;
                                             return (
-                                                <circle
+                                                <div
                                                     key={i}
-                                                    cx={x}
-                                                    cy={y}
-                                                    r="4.5"
-                                                    vectorEffect="non-scaling-stroke"
-                                                    className={`transition-all duration-200 ${hoveredLossIndex === i ? 'fill-primary stroke-white opacity-100' : 'opacity-0'}`}
-                                                    style={{ strokeWidth: 3 }}
+                                                    className={`absolute w-3 h-3 -ml-1.5 -mt-1.5 rounded-full bg-primary border-2 border-white shadow-sm transition-all duration-200 ${hoveredLossIndex === i ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}
+                                                    style={{
+                                                        left: `${x}%`,
+                                                        top: `${y}%`,
+                                                    }}
                                                 />
                                             );
                                         })}
-                                    </svg>
+                                    </div>
                                     
                                     {/* Hover Areas */}
                                     <div className="absolute inset-0 flex z-10">
@@ -152,14 +155,15 @@ export default function Results() {
 
                                     {/* Tooltip */}
                                     <div 
-                                        className={`absolute -top-8 bg-gray-900 border text-xs px-2.5 py-1 rounded-md shadow-lg whitespace-nowrap transition-all duration-200 pointer-events-none z-20 text-white font-medium ${hoveredLossIndex !== null ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-1'}`}
+                                        className={`absolute flex items-center gap-1 bg-[#131b2c] border border-white/10 text-xs px-2.5 py-1.5 rounded-md shadow-xl whitespace-nowrap pointer-events-none z-20 font-medium -translate-x-1/2 -translate-y-[calc(100%+12px)] transition-all duration-200 ${hoveredLossIndex !== null ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
                                         style={{ 
-                                            left: hoveredLossIndex !== null ? `calc(${(hoveredLossIndex / (r.chartBars.length - 1)) * 100}%)` : '50%',
-                                            transform: 'translateX(-50%)',
-                                            willChange: 'transform, opacity, left'
+                                            left: hoveredLossIndex !== null ? `${(hoveredLossIndex / (r.chartBars.length - 1)) * 100}%` : '50%',
+                                            top: hoveredLossIndex !== null ? `${100 - r.chartBars[hoveredLossIndex]}%` : '50%',
+                                            willChange: 'left, top, opacity, transform'
                                         }}
                                     >
-                                        {hoveredLossIndex !== null && `Loss: ${(r.chartBars[hoveredLossIndex] * (0.0043 / 12)).toFixed(4)}`}
+                                        <span className="text-slate-400 font-normal">Loss:</span>
+                                        <span className="text-white">{hoveredLossIndex !== null ? (r.chartBars[hoveredLossIndex] * (0.0043 / 12)).toFixed(4) : ''}</span>
                                     </div>
                                 </div>
                             ) : (
